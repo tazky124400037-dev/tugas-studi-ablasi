@@ -1,0 +1,165 @@
+% =====================================================================
+% Template Laporan Tugas — Workshop Deep Learning (Teknik Telekomunikasi ITERA)
+% Studi Ablasi RNN, LSTM, GRU vs ANN untuk Prediksi Trafik Seluler
+%
+% Format IEEE conference dua kolom, MAKSIMAL 6 HALAMAN termasuk referensi.
+% Compile: pdflatex main && bibtex main && pdflatex main && pdflatex main
+%          (atau: latexmk -pdf main.tex). Bisa juga diunggah ke Overleaf.
+%
+% Teks bertanda [ ... ] adalah petunjuk: HAPUS dan ganti dengan isi kalian.
+% =====================================================================
+\documentclass[conference,a4paper]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage[indonesian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\graphicspath{{gambar/}}
+
+% Penanda petunjuk (hapus pemakaiannya di versi akhir)
+\newcommand{\petunjuk}[1]{\textcolor{gray}{[#1]}}
+
+\begin{document}
+
+\title{Studi Ablasi RNN, LSTM, dan GRU dibandingkan ANN untuk Prediksi Trafik Seluler Kota Milan}
+
+% Satu blok per anggota (maks. 3). Hapus blok yang tidak dipakai.
+\author{
+\IEEEauthorblockN{Nama Anggota 1}
+\IEEEauthorblockA{NIM 1221400xx\\
+Teknik Telekomunikasi, ITERA\\
+email@student.itera.ac.id}
+\and
+\IEEEauthorblockN{Nama Anggota 2}
+\IEEEauthorblockA{NIM 1221400xx\\
+Teknik Telekomunikasi, ITERA\\
+email@student.itera.ac.id}
+\and
+\IEEEauthorblockN{Nama Anggota 3}
+\IEEEauthorblockA{NIM 1221400xx\\
+Teknik Telekomunikasi, ITERA\\
+email@student.itera.ac.id}
+}
+
+\maketitle
+
+\begin{abstract}
+\petunjuk{150--200 kata. Tuliskan: masalah (prediksi trafik internet per jam), data (Telecom Italia, kotak Duomo dan lokasi kelompok), apa yang diuji (ablasi faktor apa saja, 3 seed), temuan utama dengan angka (misalnya ``GRU terbaik dengan test MAE $x \pm y$, turun $z$\,\% dari acuan''), dan satu kalimat kesimpulan.}
+\end{abstract}
+
+\begin{IEEEkeywords}
+prediksi trafik seluler, RNN, LSTM, GRU, studi ablasi
+\end{IEEEkeywords}
+
+% ---------------------------------------------------------------------
+\section{Pendahuluan}
+\petunjuk{Mengapa operator perlu meramal trafik per sel? Mengapa model sekuensial (RNN, LSTM \cite{hochreiter1997lstm}, GRU \cite{cho2014gru}) dibandingkan dengan ANN? Apa itu studi ablasi dan mengapa penting? Tutup dengan daftar kontribusi laporan ini (2--3 butir). Maks. 0,5 kolom.}
+
+% ---------------------------------------------------------------------
+\section{Data dan Metode}
+
+\subsection{Dataset}
+\petunjuk{Telecom Italia Big Data Challenge \cite{barlacchi2015milan}, versi per jam dari \cite{zhang2021fedda}: periode, resolusi, fitur. Sebutkan kotak Duomo (5060) dan lokasi kelompok (kode, nama, nomor kotak). Gambar~\ref{fig:peta} boleh dipakai.}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.85\linewidth]{peta_lokasi_tugas.png}
+  \caption{Rata-rata aktivitas internet per kotak di Milan. Lingkaran kuning: lokasi tugas (kode 0--9); lingkaran toska: Duomo.}
+  \label{fig:peta}
+\end{figure}
+
+\subsection{Pembagian Data dan Praproses}
+\petunjuk{Pembagian berdasarkan waktu (train / val / test / Natal), standarisasi dengan statistik sebelum minggu validasi, \textit{windowing}. Jelaskan mengapa data deret waktu tidak boleh diacak.}
+
+\subsection{Model dan Konfigurasi Acuan}
+\petunjuk{Uraikan ANN, RNN, LSTM, GRU secara singkat (tanpa menyalin slide). Sajikan konfigurasi acuan dalam Tabel~\ref{tab:acuan}.}
+
+\begin{table}[t]
+  \centering
+  \caption{Konfigurasi acuan}
+  \label{tab:acuan}
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    Hyperparameter & Nilai acuan \\
+    \midrule
+    Panjang jendela $W$ & 24 jam \\
+    Horizon & 1 jam \\
+    Ukuran hidden & ANN 32, RNN 68, LSTM 33, GRU 38 \\
+    Jumlah lapisan & ANN 2, rekuren 1 \\
+    Fitur & net, call, sms, jam, hari (7) \\
+    Optimizer, \textit{learning rate} & Adam, $10^{-3}$ \\
+    \textit{Batch size} & 64 \\
+    \textit{Early stopping} & \textit{patience} 30, maks.\ 300 epoch \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Protokol Ablasi dan Evaluasi}
+\petunjuk{Satu faktor diubah setiap kali; daftar faktor dan nilainya (A1--A5 dan dua faktor B pilihan kalian beserta hipotesis awal). Setiap konfigurasi dilatih dengan 3 seed; dilaporkan rata-rata $\pm$ simpangan baku. Metrik: MAE, RMSE, MAPE pada skala asli. Pemilihan konfigurasi terbaik memakai val MAE. Sebutkan perangkat yang dipakai (CPU/GPU) dan total waktu training.}
+
+% ---------------------------------------------------------------------
+\section{Hasil}
+
+\subsection{Baseline Naif dan Acuan}
+\petunjuk{Tabel baseline naif dan hasil konfigurasi acuan (Bagian 0).}
+
+\subsection{Ablasi Wajib}
+\petunjuk{Satu subbagian atau paragraf per faktor A1--A5. Gunakan grafik dari folder \texttt{hasil/} (boleh digabung beberapa dalam satu gambar agar hemat tempat) dan tabel seperti Tabel~\ref{tab:contoh}. Setiap gambar dan tabel harus dirujuk dan dibahas di teks.}
+
+\begin{table}[t]
+  \centering
+  \caption{Contoh format: pengaruh panjang jendela $W$ terhadap test MAE (rata-rata $\pm$ simpangan baku, 3 seed). Angka di bawah hanya contoh.}
+  \label{tab:contoh}
+  \begin{tabular}{@{}lcccc@{}}
+    \toprule
+    $W$ (jam) & ANN & RNN & LSTM & GRU \\
+    \midrule
+    6   & $000 \pm 00$ & $000 \pm 00$ & $000 \pm 00$ & $000 \pm 00$ \\
+    24  & $000 \pm 00$ & $\mathbf{000 \pm 00}$ & $000 \pm 00$ & $000 \pm 00$ \\
+    168 & $000 \pm 00$ & $000 \pm 00$ & $000 \pm 00$ & $000 \pm 00$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Ablasi Pilihan}
+\petunjuk{Dua faktor B pilihan kalian: hipotesis awal, hasil, dan apakah hipotesis terbukti.}
+
+\subsection{Konfigurasi Terbaik}
+\petunjuk{Konfigurasi terbaik tiap model (dipilih dengan val MAE), lalu hasilnya pada minggu test dan Natal dibandingkan dengan acuan dan baseline naif.}
+
+\subsection{Uji Generalisasi}
+\petunjuk{Hasil acuan vs terbaik di lokasi kelompok. Apakah urutan model berubah? Kaitkan dengan pola trafik lokasi tersebut.}
+
+% ---------------------------------------------------------------------
+\section{Pembahasan}
+\petunjuk{Bagian terpenting. Jangan hanya mengulang angka: jelaskan \emph{mengapa}. Hyperparameter mana yang paling berpengaruh dan mana yang tidak? Apakah perbedaan antar model lebih besar daripada perbedaan antar seed? Apa keterbatasan studi ini (satu kota, 4 minggu train, satu kali pembagian waktu)?}
+
+% ---------------------------------------------------------------------
+\section{Kesimpulan}
+\petunjuk{3--5 kalimat yang menjawab pertanyaan studi, dengan angka.}
+
+% ---------------------------------------------------------------------
+\section*{Kontribusi Anggota}
+\begin{tabular}{@{}lp{0.62\linewidth}@{}}
+  Nama Anggota 1 & \petunjuk{contoh: Bagian A1--A3, penulisan Hasil} \\
+  Nama Anggota 2 & \petunjuk{...} \\
+  Nama Anggota 3 & \petunjuk{...} \\
+\end{tabular}
+
+\section*{Pernyataan Penggunaan AI}
+\petunjuk{Tuliskan alat AI yang dipakai (misalnya ChatGPT, Claude, Copilot) dan untuk apa (memperbaiki kode, merapikan bahasa, dll.). Bila tidak memakai, tulis ``Tidak ada.'' Seluruh angka harus berasal dari run kalian sendiri.}
+
+\section*{Kode dan Data}
+Kode, notebook beserta output, dan seluruh hasil run tersedia di \url{https://github.com/username/nama-repo}.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
