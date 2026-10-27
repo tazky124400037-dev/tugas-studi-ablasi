@@ -8,12 +8,12 @@ Tugas Workshop Deep Learning — Teknik Telekomunikasi ITERA.
 
 | Peran | Nama | NIM |
 |---|---|---|
-| Ketua | [Nama Lengkap] | [NIM] |
-| Anggota | [Nama Lengkap] | [NIM] |
-| Anggota | [Nama Lengkap] | [NIM] |
+| Ketua | [Nandri Napillah] | [124400073] |
+| Anggota | [Tazky Petroza] | [124400037] |
 
-- **Kelas:** [RA / RB]
-- **Lokasi kelompok:** [kode] — [nama lokasi] (digit terakhir NIM terkecil)
+
+- **Kelas:** [RA]
+- **Lokasi kelompok:** [7] — [Università Bicocca] (37)
 - **Laporan:** [`laporan-latex/main.pdf` atau `laporan-typst/main.pdf`]
 
 ## Cara Menjalankan
